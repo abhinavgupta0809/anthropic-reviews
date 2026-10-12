@@ -1,0 +1,121 @@
+review_id,platform,rating,gold_labels,gold_categories,gold_sentiment
+play_ef2d49cc-98d0-4552-9a74-da6c4f9c1303,android,1,Specific Complaint,Answer Accuracy,1
+play_77516418-dc26-4553-b861-7427b5a0e3de,android,1,Specific Complaint,"Memory & Chats",1
+play_82e294de-20fb-4f32-b21a-e9c8ce78a479,android,1,Specific Complaint,Paid Plan Limits,1
+play_c0100ad1-6a6b-4402-92e9-cb153b8c908c,android,1,Specific Complaint,Images & Files,1
+play_8d2002e4-44eb-48d8-b89d-7691ef338999,android,1,Specific Complaint,"Models & Model Quality | Tone & Refusals",2
+play_938556fd-7c97-4629-a3aa-9ce2e8e01ea5,android,1,Specific Complaint,Login & Availability,2
+play_ea368c52-e8e7-498f-819e-cfd60200c92d,android,1,Specific Complaint,"Tone & Refusals",1
+play_3d13ca56-7c84-4d82-87f8-37f763485077,android,1,Specific Complaint,"Tone & Refusals",2
+play_58a1b1d9-0c09-4f34-9871-3428d0bb52ef,android,1,Generic Bad,,2
+play_6ddd50c1-3ca0-4799-8253-a55dc6d4d94d,android,1,Specific Complaint,Free & Unstated Limits,1
+play_7795d292-b119-4e69-8bb2-32700f9a9c25,android,1,Specific Complaint,Answer Accuracy,1
+play_734af7b7-dbc9-49c7-a821-0fba0928c8f9,android,1,Specific Complaint,Account Bans & Age Checks,1
+play_a5fc94ed-6920-40f9-b7ce-4c2878c832e4,android,1,Specific Complaint,Account Bans & Age Checks,2
+play_5b8698fd-f29b-4322-9b82-1e6b5ecf55c3,android,1,Specific Complaint,"Answer Accuracy | Tone & Refusals",1
+play_3e18c703-7169-426f-8434-d443fdf63ffb,android,1,Specific Complaint,Account Bans & Age Checks,1
+play_3820279d-d227-4e52-b467-c5a5bfa5f9dd,android,1,Feature Request,Language Support,3
+play_170fd0ad-441d-459f-8950-c49541e18ae8,android,1,Specific Complaint,Account Bans & Age Checks,2
+play_83b5a19f-d69c-49a4-9760-94e704fc193b,android,1,Generic Bad,,1
+play_ccf51bea-eb55-4255-85c7-39c0071aa551,android,1,Specific Complaint,Account Bans & Age Checks,1
+play_b9e6dd2e-fa99-4725-84e7-9ab1ccd8fdad,android,1,Specific Complaint,Reliability & Bugs,2
+play_7641d009-db9c-4686-ac92-0f3d81a91845,android,2,Specific Complaint,"Tone & Refusals",2
+play_082a014a-b054-4d6f-b20d-5d46dc07e2e6,android,2,Specific Complaint,Free & Unstated Limits,1
+play_af41df6b-7528-4fa0-b582-95bff274ca2e,android,2,Specific Complaint,"Reliability & Bugs | Memory & Chats",2
+play_a63ac5ca-f42e-456c-ab69-00a322584140,android,2,Specific Complaint,Answer Accuracy | Models & Model Quality,1
+play_e683ce43-c38c-411c-a060-13fb3a9bbf8a,android,2,Specific Complaint,Login & Availability,2
+play_73646502-6f65-4294-a91c-5b33a272b189,android,2,Specific Complaint | Specific Praise,Coding & Claude Code,3
+play_ac49bcde-84ec-4d32-aa26-ec407acb9fc3,android,2,Specific Complaint,Reliability & Bugs,2
+play_3132e14f-254d-4acb-a85f-ba018f1e4fdc,android,2,Specific Praise | Generic Bad,Coding & Claude Code,3
+play_e0c58c4f-eeaf-42b4-baaf-36c4032f4e42,android,3,Specific Praise,Writing & Creative,4
+play_d1796d78-5dea-4637-becd-0577adb05da0,android,3,Specific Complaint,"Models & Model Quality | Tone & Refusals",2
+play_ff52ffb0-086f-4179-b0db-cb8da6101e7f,android,3,Specific Complaint | Specific Praise,Free & Unstated Limits | Images & Files,3
+play_43ea63fd-9273-45ea-be20-9a6f54c7368d,android,3,Specific Complaint,UI / UX | Reliability & Bugs,3
+play_fbef6124-632a-463b-887d-66b30d291cba,android,3,Specific Complaint,Free & Unstated Limits | Reliability & Bugs,2
+play_52a549fc-4073-4dec-b5f9-10ed0d0197ca,android,3,Specific Complaint,Images & Files | Answer Accuracy,2
+play_b53e121e-dc79-48ab-9152-bcfa7e1da85e,android,3,Specific Complaint,"Speed | Tone & Refusals",2
+play_3acb3947-cbdd-40f7-9ab8-69dad8d9de8b,android,3,Generic Good,,4
+play_4f0cab71-453b-4c69-8161-ddecb7f04448,android,3,Specific Complaint,Reliability & Bugs,2
+play_75007739-7be3-445e-a2ac-f20f36f679bf,android,3,Generic Bad,,2
+play_0a7e38a6-d0da-4fcf-8816-d860f8f62938,android,4,Specific Complaint | Generic Good,Free & Unstated Limits,3
+play_b7f0e17a-f137-4e77-be70-bc92c638eb34,android,4,Specific Complaint | Specific Praise,Answer Accuracy | Use Cases,4
+play_d39cfac7-0ea5-42f0-80f5-bfa3db8b80d4,android,4,Specific Praise,Speed | Answer Accuracy,5
+play_c0a385e2-facf-4f78-8eed-a7c7e438ead2,android,4,Generic Good,,4
+play_beb058df-d7b4-455f-94bb-67af61010c8b,android,4,Specific Complaint | Specific Praise,Images & Files | Use Cases,3
+play_71e9422e-2430-40cb-bf0a-7c77c936b76a,android,4,Specific Complaint,Reliability & Bugs,2
+play_41d4b707-9125-4512-bb75-e6f8d2b34ed0,android,4,Specific Complaint | Specific Praise,Answer Accuracy | Other,3
+play_238ccfca-e19d-4d4a-90a3-0633dbb72c85,android,4,Specific Praise | Feature Request,Use Cases | Images & Files,4
+play_906b0009-b2d4-48c6-a0d1-aee866cd50f7,android,4,Generic Good,,5
+play_badb1d0c-3a0a-44db-bbeb-a77c0f3a20d8,android,4,Generic Good,,4
+play_e3912066-7eb1-401f-94c8-413ab20c1e04,android,4,Generic Good,,5
+play_ef43e3cd-a9f2-4eed-870c-0d90f5b36e2f,android,4,Generic Good,,5
+play_3e317ac4-21ef-42e8-9ab2-fd637b85c10c,android,5,Specific Praise,Models & Model Quality,5
+play_9ed88a64-82cd-48df-bed4-5c885626ed7e,android,5,Specific Praise,Use Cases,5
+play_a9e3ef33-a818-4cc2-88b9-cecf585aa1f8,android,5,Specific Praise,Use Cases,5
+play_f89fc97b-c8a1-43f7-9e49-ca2c38327425,android,5,Generic Good,,5
+play_22f07f28-d608-4d07-bc13-e4ae07d2097c,android,5,Specific Praise,"Privacy & Company",5
+play_6ae3ea54-e38d-446c-a069-e71becf979bb,android,5,Specific Praise,Use Cases,5
+play_3ebbde71-049b-46b7-b64b-efe914329058,android,5,Specific Praise,Use Cases | Pricing & Value,5
+play_3e13215b-98ac-4497-ae3f-eef666167e52,android,5,Specific Praise,"Memory & Chats | Writing & Creative",5
+play_e080764f-fa1d-41ca-a5c8-e5d0f7349446,android,5,Specific Praise,Coding & Claude Code,5
+play_616e44c1-345a-41e0-baee-234a3ac2448f,android,5,Specific Praise,Pricing & Value,5
+play_fffed7f2-e80d-4999-99ef-e92da25014fe,android,5,Specific Complaint,Login & Availability,3
+play_625422a1-048d-4372-8c88-d12927fd2f6a,android,5,Feature Request | Generic Good,Images & Files,4
+play_dd6d7149-5fcf-445c-9180-f8a911b58c42,android,5,Specific Praise,"Cowork & Agents | Writing & Creative",5
+play_3f2aeb07-a297-4c7e-87b3-1f4af9eea0f8,android,5,Specific Praise,"Use Cases | Memory & Chats",5
+play_6978a49e-4812-42e6-92fd-2f7de8979f0f,android,5,Specific Praise,Use Cases,5
+play_85bd405c-28ce-467f-bcc7-6a752078c75e,android,5,Specific Praise,Speed,5
+play_bd97c3e1-aa92-43a1-81e1-fa1b77353179,android,5,Specific Praise,Free & Unstated Limits,4
+play_894cf107-e04e-4112-84af-92df8a8841ce,android,5,Specific Praise,"Speed | Tone & Refusals",5
+play_9b2d48ac-af9c-41c6-980d-967277189f07,android,5,Specific Praise,Use Cases,5
+play_0fb1f962-ab98-4380-964a-9125d5f42572,android,5,Generic Good,,4
+play_4ced2563-5e90-458b-9d05-59f0fc0fd000,android,5,Specific Complaint | Generic Good,Free & Unstated Limits,4
+play_4709797a-dfd7-4295-8731-c5dded839ab0,android,5,Generic Good,,5
+play_28a0b7fe-4d21-431a-8268-0c4f27f63095,android,5,Specific Praise,"Tone & Refusals",5
+play_784d3b31-f99f-4811-b022-bb19e0112b58,android,5,Specific Praise,Coding & Claude Code | Models & Model Quality,5
+play_6b89a2db-15f0-48ad-a3ce-2c716650eade,android,5,Generic Good,,5
+play_25a389b0-dac4-4b0d-9fb4-d83c05556f77,android,5,Generic Good,,4
+play_5182ed4a-7259-4c29-b180-efe5e82dd615,android,5,Generic Good,,4
+play_8c41fbc0-e1ee-4c08-89c5-3ae205419673,android,5,Generic Good,,5
+play_4bdce7bb-54cd-464d-bfcd-598f14f220e4,android,5,Generic Good,,4
+play_e9801d78-3feb-4759-976e-96476d330739,android,5,Generic Good,,4
+play_193670ac-ed79-4b99-97f5-2f1641a85aff,android,5,Generic Good,,5
+play_12e054d8-01df-412d-9d07-ee1529d824b4,android,5,Generic Good,,5
+play_d6570c43-da23-40aa-b1e7-736c2c9b3af9,android,5,Generic Good,,5
+play_4aee2a32-8048-4589-a607-3f35b7555c41,android,5,Generic Good,,5
+ios_14627892720,ios,1,Specific Complaint,Account Bans & Age Checks | Customer Support,2
+ios_14487526454,ios,1,Specific Complaint,"Tone & Refusals | Answer Accuracy",1
+ios_14633255260,ios,1,Specific Complaint,Account Bans & Age Checks,1
+ios_14556569107,ios,1,Specific Complaint,Answer Accuracy,1
+ios_14523512400,ios,1,Specific Complaint,Reliability & Bugs | Answer Accuracy,1
+ios_14630292213,ios,1,Specific Complaint,Account Bans & Age Checks | Customer Support,1
+ios_14600782925,ios,1,Specific Complaint,Login & Availability,2
+ios_14588958437,ios,1,Specific Complaint,Images & Files,2
+ios_14535475323,ios,1,Nonsense,,3
+ios_14548228126,ios,1,Specific Complaint,Billing & Subscription,1
+ios_14427679650,ios,1,Generic Bad,,1
+ios_14464425379,ios,1,Specific Complaint,"Tone & Refusals",1
+ios_14422865831,ios,2,Specific Complaint,Pricing & Value | Free & Unstated Limits,1
+ios_14305846741,ios,2,Specific Complaint,"Reliability & Bugs | Memory & Chats",2
+ios_14327671833,ios,2,Specific Complaint,Reliability & Bugs | Paid Plan Limits,2
+ios_14387628063,ios,2,Specific Complaint | Specific Praise,"Free & Unstated Limits | Tone & Refusals",3
+ios_14641327733,ios,2,Specific Complaint,UI / UX,2
+ios_14616362104,ios,3,Specific Complaint,Reliability & Bugs,2
+ios_14540819032,ios,3,Specific Complaint,"Answer Accuracy | Tone & Refusals",2
+ios_14648267932,ios,3,Specific Complaint,Web Search & Research,2
+ios_14533267961,ios,3,Feature Request | Generic Good,Images & Files,4
+ios_14570982571,ios,3,Specific Complaint,Account Bans & Age Checks,2
+ios_14381453159,ios,4,Specific Complaint,"Tone & Refusals",2
+ios_14412892027,ios,4,Specific Complaint,"Reliability & Bugs | Memory & Chats",3
+ios_14617254558,ios,4,Feature Request,UI / UX | Coding & Claude Code,3
+ios_14543128360,ios,4,Specific Praise,Models & Model Quality | Speed,5
+ios_14556133192,ios,4,Generic Good,,4
+ios_14625535221,ios,5,Specific Praise,Writing & Creative | Models & Model Quality,5
+ios_14618601415,ios,5,Specific Praise,Use Cases | Answer Accuracy,5
+ios_14593736657,ios,5,Specific Praise,Pricing & Value,4
+ios_14642481626,ios,5,Feature Request | Generic Good,Language Support,4
+ios_14324324619,ios,5,Specific Praise,"Coding & Claude Code | Tone & Refusals",5
+ios_14533701705,ios,5,Specific Praise,"Cowork & Agents",5
+ios_14441340052,ios,5,Generic Good,,5
+ios_14512097799,ios,5,Specific Praise,Use Cases,5
+ios_14635021351,ios,5,Generic Good,,4

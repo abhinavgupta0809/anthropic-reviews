@@ -1,0 +1,762 @@
+{
+  "version": 1,
+  "about": "Written by Claude from the Oct 12, 2026 annotated corpus of Claude app reviews. Narrative only. Every number shown on the site comes from running each item's `match` against data/annotated_reviews.csv in build_site_data.py. Tokens in text ({{count}}, {{pct_low_star}}, {{avg_rating}}, {{ios_count}}, {{android_count}}, {{pct_of_substantive}}) are filled from that item's own match. Each improvement, request, and strength carries a `next` line: the check a PM with internal data would run.",
+  "match_spec": {
+    "labels_any": "review has at least one of these labels",
+    "categories_any": "review has at least one of these categories",
+    "categories_all": "review has every one of these categories",
+    "pattern": "case-insensitive regex searched in lowercase title + review_text + english_translation + topic, joined by spaces",
+    "regression_claim": "true = only reviews with regression_claim TRUE",
+    "competitors_any": "review names at least one of these competitors",
+    "combine": "all present fields must hold (AND)"
+  },
+  "evidence_note": "Store reviews are self-selected and skew to people who are delighted or angry. Treat everything here as a signal to investigate, not a validated problem or a market size.",
+  "callouts": [
+    {
+      "id": "c_limits",
+      "placement": "overview",
+      "title": "Limits are the loudest complaint",
+      "text": "{{count}} complaints and requests are about usage limits, on free and paid plans. {{pct_low_star}} of them come with 1 or 2 stars.",
+      "match": {
+        "labels_any": [
+          "Specific Complaint",
+          "Feature Request"
+        ],
+        "categories_any": [
+          "Free & Unstated Limits",
+          "Paid Plan Limits"
+        ]
+      }
+    },
+    {
+      "id": "c_regression",
+      "placement": "overview",
+      "title": "\"It used to be better\"",
+      "text": "{{count}} reviewers say the product got worse than it was.",
+      "match": {
+        "regression_claim": true
+      }
+    },
+    {
+      "id": "c_substantive",
+      "placement": "overview",
+      "title": "Reviews that say something specific",
+      "text": "Everything in Deep Dive and Opportunities rests on these.",
+      "match": {
+        "labels_any": [
+          "Specific Praise",
+          "Specific Complaint",
+          "Feature Request"
+        ]
+      }
+    },
+    {
+      "id": "c_rival_images",
+      "placement": "overview",
+      "title": "Rivals and images",
+      "text": "{{count}} reviews that name another product also mention images.",
+      "match": {
+        "competitors_any": [
+          "ChatGPT",
+          "Gemini",
+          "Grok",
+          "DeepSeek",
+          "Copilot",
+          "Perplexity",
+          "Meta AI",
+          "Kimi",
+          "Other"
+        ],
+        "pattern": "image generat|generat\\w* (an? |the |me )?(image|picture|photo|pic)|creat\\w* (an? |the |me )?(image|picture|photo|pic)|mak\\w* (an? |me )?(image|picture|photo|pic)|(image|photo|picture)s? (edit|creat)|edit\\w* (an? |the |my )?(image|photo|picture)|no image|can.?t draw|cannot draw|photomontage|generate media|video generation"
+      }
+    }
+  ],
+  "improvements": [
+    {
+      "id": "i_free_limits",
+      "type": "explore",
+      "title": "The limit arrives before the answer",
+      "desc": "Reviewers on the free plan, or who don't say which plan, describe hitting the usage limit within a handful of messages, sometimes on the first, and then waiting hours. Several say they couldn't judge the product before being asked to pay.",
+      "match": {
+        "labels_any": [
+          "Specific Complaint",
+          "Feature Request"
+        ],
+        "categories_any": [
+          "Free & Unstated Limits"
+        ]
+      },
+      "short": "Limit hit early",
+      "next": "Pull the distribution of messages sent before the first limit for new free accounts, and compare 7-day return of those who hit it in session one against those who did not. If the capped cohort returns less, test showing remaining usage before a long request starts instead of after it fails."
+    },
+    {
+      "id": "i_paid_limits",
+      "type": "explore",
+      "title": "Paying users run out too",
+      "desc": "Reviews that say they pay (Pro, Max, a subscription) and still hit five-hour or weekly limits, some after a single task. Many say the allowance shrank after a model or app update.",
+      "match": {
+        "labels_any": [
+          "Specific Complaint",
+          "Feature Request"
+        ],
+        "categories_any": [
+          "Paid Plan Limits"
+        ]
+      },
+      "short": "Paid limits",
+      "next": "Split by plan: what share of Pro and Max accounts hit a weekly limit each week, and how much of their usage went to retries, failed responses, or the largest model. Reviews that say the limit shrank can be checked against the dates the allowance or the default model changed."
+    },
+    {
+      "id": "i_limit_one",
+      "type": "explore",
+      "title": "\"One message and I'm locked out\"",
+      "desc": "The sharpest version of the limit complaint: the limit is reached on the first or second message, or before any answer is shown.",
+      "match": {
+        "labels_any": [
+          "Specific Complaint",
+          "Feature Request"
+        ],
+        "categories_any": [
+          "Free & Unstated Limits",
+          "Paid Plan Limits"
+        ],
+        "pattern": "(after|just|only|in|with|asked|ask|sent|send|sending|within)\\s+(just |only |like )?(one|1|a single|single|two|2|one or two|1 or 2|one/two|1-2|a couple of|2 or 3|2-3|three|3)\\s+(simple |short |small |basic |more )?(message|question|prompt|chat|request|task|query|queries)|limit (reached )?(after|on|in) (one|1|the first|two|2)|before (even )?(answer|respond|finish|giving|getting)|without (even )?(answer|respond|giving|getting)|(first|second) (message|question|prompt)"
+      },
+      "short": "One-message limit",
+      "next": "Find the sessions where a limit fired with fewer than three user messages. Check what consumed the allowance (a long attached file, extended thinking, a retry loop) and whether the user was told before sending."
+    },
+    {
+      "id": "i_bans",
+      "type": "fix",
+      "title": "Accounts banned or held with no reason given",
+      "desc": "Accounts suspended, disabled, or put on hold, often on the day of sign-up or right after paying. Reviewers say they got no reason and that appeals returned a final decision without detail.",
+      "match": {
+        "labels_any": [
+          "Specific Complaint",
+          "Feature Request"
+        ],
+        "categories_any": [
+          "Account Bans & Age Checks"
+        ]
+      },
+      "short": "Bans and holds",
+      "next": "Measure the share of holds reversed on appeal and the median time to a decision, split by paying and free. If reversals are common, the detection threshold is too aggressive; if they are rare but appeals are slow, the fix is the appeal queue and the wording of the notice."
+    },
+    {
+      "id": "i_age",
+      "type": "fix",
+      "title": "Age checks: adults flagged, verification that fails",
+      "desc": "Reviews about under-18 detection and age or identity verification. They include adults who say they were misflagged, people whose verification failed or who would not hand over an ID, and under-18s objecting to the age rule.",
+      "match": {
+        "labels_any": [
+          "Specific Complaint",
+          "Feature Request"
+        ],
+        "categories_any": [
+          "Account Bans & Age Checks"
+        ],
+        "pattern": "under ?18|18 ?\\+|underage|minor\\b|\\bage\\b|years? old|verif|identity|persona\\b|yoti|\\bkid\\b|child|teen"
+      },
+      "short": "Age checks",
+      "next": "Audit the under-18 signal on accounts that later verified as adults: that false-positive rate is the number to manage. Then walk the verification flow on a held account, since several reviews say sign-in is required to reach the help page that explains it."
+    },
+    {
+      "id": "i_wrong",
+      "type": "fix",
+      "title": "Wrong, invented, or half-done work",
+      "desc": "Hallucinated facts, repeated mistakes after correction, tasks reported as done that were not, and long documents that needed many rounds of fixes.",
+      "match": {
+        "labels_any": [
+          "Specific Complaint"
+        ],
+        "categories_any": [
+          "Answer Accuracy"
+        ]
+      },
+      "short": "Wrong answers",
+      "next": "Treat these {{count}} reviews as a seed eval set. Group them by failure type (invented fact, repeated error after correction, claimed completion) and score the current default model on each group, so a regression shows up in a number before it shows up in reviews."
+    },
+    {
+      "id": "i_ignores",
+      "type": "fix",
+      "title": "Doesn't do what was asked",
+      "desc": "The model misreads the request or ignores an explicit instruction, even after the user repeats it.",
+      "match": {
+        "labels_any": [
+          "Specific Complaint"
+        ],
+        "categories_any": [
+          "Answer Accuracy"
+        ],
+        "pattern": "ignor|misunderst|misread|not listen|doesn.t listen|did(n.t| not) understand|does(n.t| not) understand|instruction|didn.t do what|not follow|doesn.t follow|does not follow|what i ask"
+      },
+      "short": "Ignores the ask",
+      "next": "This is the instruction-following slice of the eval set. Replay the pattern reviewers describe (an explicit instruction, repeated across turns) and score it separately from factual accuracy."
+    },
+    {
+      "id": "i_refusals",
+      "type": "explore",
+      "title": "Refusals, lecturing, and pushback",
+      "desc": "Harmless requests refused or switched to a safer model, moralizing, political or worldview bias, arguing with the user, and a condescending or defensive tone.",
+      "match": {
+        "labels_any": [
+          "Specific Complaint",
+          "Feature Request"
+        ],
+        "categories_any": [
+          "Tone & Refusals"
+        ]
+      },
+      "short": "Refusals and tone",
+      "next": "Tag these by sub-type: refusal, safety reroute, lecturing, bias, defensiveness. Refusals and reroutes can be sampled and scored for false positives against policy; tone needs a rubric eval. Keep the praise for directness in view, because reviewers praise and attack the same trait."
+    },
+    {
+      "id": "i_model_worse",
+      "type": "explore",
+      "title": "\"The new model is worse\"",
+      "desc": "Long-time users who say a newer model is duller, less capable, or more restricted than the one it replaced, or who ask for an older model back.",
+      "match": {
+        "labels_any": [
+          "Specific Complaint",
+          "Feature Request"
+        ],
+        "categories_any": [
+          "Models & Model Quality"
+        ],
+        "regression_claim": true
+      },
+      "short": "Model got worse",
+      "next": "Line these reviews up against model release and deprecation dates. If they cluster after a default-model change, run the old and new defaults on the tasks these reviewers name (creative writing, long documents, reasoning) before deciding whether it is a model gap or a change in limits that feels like one."
+    },
+    {
+      "id": "i_bugs",
+      "type": "fix",
+      "title": "Errors, cut-off replies, and things that stopped working",
+      "desc": "Responses that fail or stop midway, sync between devices that broke, downloads that don't arrive, and features that stopped working after an update.",
+      "match": {
+        "labels_any": [
+          "Specific Complaint"
+        ],
+        "categories_any": [
+          "Reliability & Bugs"
+        ]
+      },
+      "short": "Bugs",
+      "next": "Join these reviews to app version and platform. If one release dominates, it is a release bug. Failed responses that still spend usage come up repeatedly, so check whether an errored response is counted against the limit."
+    },
+    {
+      "id": "i_capacity",
+      "type": "fix",
+      "title": "\"Claude is overloaded\"",
+      "desc": "Capacity and high-traffic messages, including from reviewers who say they pay.",
+      "match": {
+        "labels_any": [
+          "Specific Complaint",
+          "Feature Request"
+        ],
+        "pattern": "overload|at capacity|over capacity|high traffic|high demand|server (is |are |often |always )?(busy|down)|servers? (is |are )?(busy|down)"
+      },
+      "short": "Overloaded",
+      "next": "Count overloaded errors per active user by plan and hour. Reviewers who pay read this as a broken promise, so check whether paid traffic is actually prioritised when capacity is short, and say so in the error message if it is."
+    },
+    {
+      "id": "i_no_images",
+      "type": "explore",
+      "title": "No image generation or editing",
+      "desc": "Reviewers who expected to generate or edit images and found they can't. Some say this wasn't clear before they paid.",
+      "match": {
+        "labels_any": [
+          "Specific Complaint",
+          "Feature Request"
+        ],
+        "categories_any": [
+          "Images & Files"
+        ],
+        "pattern": "image generat|generat\\w* (an? |the |me )?(image|picture|photo|pic)|creat\\w* (an? |the |me )?(image|picture|photo|pic)|mak\\w* (an? |me )?(image|picture|photo|pic)|(image|photo|picture)s? (edit|creat)|edit\\w* (an? |the |my )?(image|photo|picture)|no image|can.?t draw|cannot draw|photomontage|generate media|video generation"
+      },
+      "short": "Image generation",
+      "next": "Count how many reviews that name a rival also mention images. If image generation is a stated reason to leave, decide between building it, partnering, or saying plainly on the paywall that it isn't included."
+    },
+    {
+      "id": "i_files",
+      "type": "fix",
+      "title": "Uploads, downloads, and generated files",
+      "desc": "Files that won't upload or download, generated documents that come out broken, and weak reading of images.",
+      "match": {
+        "labels_any": [
+          "Specific Complaint",
+          "Feature Request"
+        ],
+        "categories_any": [
+          "Images & Files"
+        ],
+        "pattern": "download|upload|\\bfiles?\\b|pdf|document|docx?\\b|artifact|attach|export|\\bsave\\b"
+      },
+      "short": "Files",
+      "next": "Measure the failure rate of file downloads and artifact exports on mobile by version. These are concrete, reproducible bugs with a short path to a fix."
+    },
+    {
+      "id": "i_billing",
+      "type": "fix",
+      "title": "Charged, not upgraded, not refunded",
+      "desc": "Paid upgrades that didn't apply, charges after cancelling or after a ban, and refunds refused.",
+      "match": {
+        "labels_any": [
+          "Specific Complaint",
+          "Feature Request"
+        ],
+        "categories_any": [
+          "Billing & Subscription"
+        ]
+      },
+      "short": "Billing",
+      "next": "Count subscriptions where payment succeeded and the plan did not change within an hour, and charges on accounts that were on hold. Both are small in volume and among the lowest-rated reviews here."
+    },
+    {
+      "id": "i_support",
+      "type": "fix",
+      "title": "No human to reach",
+      "desc": "Billing and account problems that end at a bot or a help-centre link.",
+      "match": {
+        "labels_any": [
+          "Specific Complaint",
+          "Feature Request"
+        ],
+        "categories_any": [
+          "Customer Support"
+        ]
+      },
+      "short": "Support",
+      "next": "Measure the share of billing and account-hold tickets that never reach a person, and time to first human reply. Most of these reviews overlap with bans and billing, so one escalation path covers all three."
+    },
+    {
+      "id": "i_login",
+      "type": "fix",
+      "title": "Can't sign in, or not available here",
+      "desc": "Sign-in loops, verification codes that don't arrive, phone-number checks that fail, and countries where the app won't register.",
+      "match": {
+        "labels_any": [
+          "Specific Complaint",
+          "Feature Request"
+        ],
+        "categories_any": [
+          "Login & Availability"
+        ]
+      },
+      "short": "Sign-in",
+      "next": "Count sign-in failures by method (email code, Google, Apple, phone) and country. Separate unsupported regions, which are a policy choice, from supported regions where verification fails, which are bugs."
+    },
+    {
+      "id": "i_pricing",
+      "type": "explore",
+      "title": "Too expensive for what the limit allows",
+      "desc": "Price complaints, usually tied to limits: the plan costs too much for how little use it buys. Also requests for student and regional prices.",
+      "match": {
+        "labels_any": [
+          "Specific Complaint",
+          "Feature Request"
+        ],
+        "categories_any": [
+          "Pricing & Value"
+        ]
+      },
+      "short": "Price",
+      "next": "Read these with the limit reviews: the complaint is price per unit of use, not the sticker price. Test a cheaper, lower-limit tier or regional pricing in two markets and compare conversion and 90-day retention."
+    },
+    {
+      "id": "i_memory",
+      "type": "fix",
+      "title": "Lost context, lost chats, no search",
+      "desc": "Chats that forget earlier turns, memory that can't be edited, projects that don't sync to mobile, and no way to search chat history.",
+      "match": {
+        "labels_any": [
+          "Specific Complaint",
+          "Feature Request"
+        ],
+        "categories_any": [
+          "Memory & Chats"
+        ]
+      },
+      "short": "Memory and chats",
+      "next": "Search across chats is a named, repeated request with a clear scope. For forgetting, measure how often long chats pass the context limit and what the user sees when they do."
+    },
+    {
+      "id": "i_language",
+      "type": "explore",
+      "title": "\"It doesn't speak my language\"",
+      "desc": "Requests for an interface or replies in Arabic, Russian, Polish, Thai, Turkish, Vietnamese, and others, and complaints that Claude answers in English to a non-English message.",
+      "match": {
+        "labels_any": [
+          "Specific Complaint",
+          "Feature Request"
+        ],
+        "categories_any": [
+          "Language Support"
+        ]
+      },
+      "short": "Language",
+      "next": "Rank languages by reviews here against installs in those markets. Reply-in-the-wrong-language is a model behaviour that can be evaluated now; interface localisation is a roadmap call."
+    },
+    {
+      "id": "i_voice",
+      "type": "fix",
+      "title": "Voice mode and read-aloud",
+      "desc": "Voices that changed, speech recognition errors, voice sessions that time out, and read-aloud that now counts against usage.",
+      "match": {
+        "labels_any": [
+          "Specific Complaint",
+          "Feature Request"
+        ],
+        "categories_any": [
+          "Voice & Dictation"
+        ]
+      },
+      "short": "Voice",
+      "next": "Check what changed in voice in September: reviewers describe a voice being replaced and read-aloud gaining a limit. Decide whether read-aloud belongs under the usage limit at all, since reviewers frame it as an accessibility feature."
+    },
+    {
+      "id": "i_coding",
+      "type": "explore",
+      "title": "Coding work that goes wrong or stops midway",
+      "desc": "Wrong or broken code, fixes that undo earlier work, and coding sessions that stop when the limit runs out with the job unfinished.",
+      "match": {
+        "labels_any": [
+          "Specific Complaint",
+          "Feature Request"
+        ],
+        "categories_any": [
+          "Coding & Claude Code"
+        ]
+      },
+      "short": "Coding",
+      "next": "Separate the two causes. For limit stops, measure how many coding sessions end at a limit mid-task and whether the user was warned first. For wrong code, add these reviews to the eval set under a coding group."
+    },
+    {
+      "id": "i_remote",
+      "type": "fix",
+      "title": "Claude Code, Remote Control, and Cowork from the phone",
+      "desc": "Developers who run or follow coding sessions from the mobile app: Remote Control that won't connect, queued messages lost, sessions and dispatch that don't show up.",
+      "match": {
+        "labels_any": [
+          "Specific Complaint",
+          "Feature Request"
+        ],
+        "pattern": "remote control|claude code|dispatch|\\bcowork\\b"
+      },
+      "short": "Code on mobile",
+      "next": "Measure Remote Control and dispatch session success from mobile by app version. These are likely among the heaviest paying users, so a small count here is worth more than its size; confirm by checking plan mix of mobile Claude Code users."
+    },
+    {
+      "id": "i_ui",
+      "type": "explore",
+      "title": "Interface friction",
+      "desc": "A sidebar that can't be closed on tablets and foldables, extra taps after redesigns, missing icons, widget problems, and unwanted notifications.",
+      "match": {
+        "labels_any": [
+          "Specific Complaint",
+          "Feature Request"
+        ],
+        "categories_any": [
+          "UI / UX"
+        ]
+      },
+      "short": "Interface",
+      "next": "Small, concrete, and mostly from tablet and foldable owners. Check the sidebar and layout complaints against device class before the next layout change."
+    }
+  ],
+  "feature_requests": [
+    {
+      "id": "f_images",
+      "title": "Generate and edit images",
+      "desc": "Image generation, image editing, and video understanding, usually with a rival named as having it.",
+      "match": {
+        "labels_any": [
+          "Feature Request"
+        ],
+        "categories_any": [
+          "Images & Files"
+        ]
+      },
+      "next": "The most-named missing feature. Count how often it appears with a rival's name before sizing it; if it mostly comes from reviewers who rate the app 4 or 5 stars, it is an expansion ask, not a churn reason."
+    },
+    {
+      "id": "f_limits",
+      "title": "More use before the limit",
+      "desc": "Higher or unlimited message caps, shorter reset waits, and a visible meter.",
+      "match": {
+        "labels_any": [
+          "Feature Request"
+        ],
+        "categories_any": [
+          "Free & Unstated Limits",
+          "Paid Plan Limits"
+        ]
+      },
+      "next": "Separate the asks: more allowance is a pricing decision, but a visible meter and a warning before a long request are product changes that cost nothing in compute."
+    },
+    {
+      "id": "f_language",
+      "title": "My language",
+      "desc": "An interface in Arabic, Russian, Polish, Thai, and others.",
+      "match": {
+        "labels_any": [
+          "Feature Request"
+        ],
+        "categories_any": [
+          "Language Support"
+        ]
+      },
+      "next": "Rank the requested languages by market size and by current review volume, then localise the top two and watch ratings in those storefronts."
+    },
+    {
+      "id": "f_pricing",
+      "title": "Student, regional, and cheaper plans",
+      "desc": "Student discounts, prices that fit local incomes, more payment methods, and a tier between free and Pro.",
+      "match": {
+        "labels_any": [
+          "Feature Request"
+        ],
+        "categories_any": [
+          "Pricing & Value"
+        ]
+      },
+      "next": "These come from reviewers who otherwise rate the app well. Test one regional price and one student price and read conversion and retention before rolling out."
+    },
+    {
+      "id": "f_memory",
+      "title": "Search and organise chats",
+      "desc": "Search across and inside chats, jump to a message, link chats to projects, editable memory.",
+      "match": {
+        "labels_any": [
+          "Feature Request"
+        ],
+        "categories_any": [
+          "Memory & Chats"
+        ]
+      },
+      "next": "Search across chats is the clearest request here. Check how many users have more than 50 chats before prioritising it against memory controls."
+    },
+    {
+      "id": "f_ui",
+      "title": "Interface requests",
+      "desc": "Collapsible sidebar on tablets, line-wrapping in code blocks, themed icons, widgets.",
+      "match": {
+        "labels_any": [
+          "Feature Request"
+        ],
+        "categories_any": [
+          "UI / UX"
+        ]
+      },
+      "next": "Ship the two cheapest (collapsible sidebar, code-block wrapping) and watch whether the requests stop."
+    },
+    {
+      "id": "f_voice",
+      "title": "Voice options",
+      "desc": "Choice of voice, language of dictation, longer voice sessions, read-aloud without a limit.",
+      "match": {
+        "labels_any": [
+          "Feature Request"
+        ],
+        "categories_any": [
+          "Voice & Dictation"
+        ]
+      },
+      "next": "Voice choice and dictation language are settings. Longer sessions are a cost question; check voice session length distribution first."
+    },
+    {
+      "id": "f_agents",
+      "title": "Cowork, tasks, and connectors on the phone",
+      "desc": "See and get notified about Cowork and scheduled tasks on mobile, more connectors.",
+      "match": {
+        "labels_any": [
+          "Feature Request"
+        ],
+        "categories_any": [
+          "Cowork & Agents",
+          "Coding & Claude Code"
+        ]
+      },
+      "next": "Reviewers start work on desktop and want to follow it on the phone. Check how many Cowork users open the mobile app the same day; that is the audience for task status and notifications."
+    },
+    {
+      "id": "f_models",
+      "title": "Model access",
+      "desc": "A specific model on the free plan, or an older model brought back.",
+      "match": {
+        "labels_any": [
+          "Feature Request"
+        ],
+        "categories_any": [
+          "Models & Model Quality"
+        ]
+      },
+      "next": "Log which models users try to select and can't. Requests for a retired model are a signal about what the replacement lost."
+    }
+  ],
+  "strengths": [
+    {
+      "id": "s_coding",
+      "title": "Coding is the most-praised job",
+      "desc": "Praise that names programming, building apps, or Claude Code.",
+      "match": {
+        "labels_any": [
+          "Specific Praise"
+        ],
+        "categories_any": [
+          "Coding & Claude Code"
+        ]
+      },
+      "next": "Protect it: keep coding tasks in the regression eval for every default-model change, and treat coding reviewers' limit complaints as the retention risk for this group."
+    },
+    {
+      "id": "s_accuracy",
+      "title": "Trusted answers",
+      "desc": "Praise for accurate, reliable answers and for hallucinating less than rivals.",
+      "match": {
+        "labels_any": [
+          "Specific Praise"
+        ],
+        "categories_any": [
+          "Answer Accuracy"
+        ]
+      },
+      "next": "These reviews are the counterweight to the wrong-answer set. Use both as the eval baseline so a fix for one doesn't regress the other."
+    },
+    {
+      "id": "s_tone",
+      "title": "Honest, direct, and human",
+      "desc": "Praise for a straightforward tone, honesty, and not flattering the user.",
+      "match": {
+        "labels_any": [
+          "Specific Praise"
+        ],
+        "categories_any": [
+          "Tone & Refusals"
+        ]
+      },
+      "next": "The same trait draws the pushback complaints. Any change to reduce arguing should be checked against this praise first."
+    },
+    {
+      "id": "s_models",
+      "title": "Smart models",
+      "desc": "Praise for intelligence and reasoning, often naming a model.",
+      "match": {
+        "labels_any": [
+          "Specific Praise"
+        ],
+        "categories_any": [
+          "Models & Model Quality"
+        ]
+      },
+      "next": "Track which model names appear in praise over time; a drop after a release is an early read on how it landed."
+    },
+    {
+      "id": "s_use",
+      "title": "Study and work",
+      "desc": "Students, teachers, lawyers, and people who use it through the working day.",
+      "match": {
+        "labels_any": [
+          "Specific Praise"
+        ],
+        "categories_any": [
+          "Use Cases"
+        ]
+      },
+      "next": "Study is a named use across languages, and under-18 detection locks some of these users out. Size how many held accounts were using it for coursework."
+    },
+    {
+      "id": "s_writing",
+      "title": "Writing",
+      "desc": "Praise for writing, editing, and creative work.",
+      "match": {
+        "labels_any": [
+          "Specific Praise"
+        ],
+        "categories_any": [
+          "Writing & Creative"
+        ]
+      },
+      "next": "Creative writers are also the group that says newer models feel duller. Keep a writing-quality check in model evaluations."
+    },
+    {
+      "id": "s_ease",
+      "title": "Easy to use",
+      "desc": "Praise for a clean, simple interface.",
+      "match": {
+        "labels_any": [
+          "Specific Praise"
+        ],
+        "categories_any": [
+          "UI / UX"
+        ]
+      },
+      "next": "Ease of use is praised by name, so layout changes carry risk. Recent redesign complaints come from the same surface."
+    },
+    {
+      "id": "s_research",
+      "title": "Research and analysis",
+      "desc": "Praise for research depth and analysis.",
+      "match": {
+        "labels_any": [
+          "Specific Praise"
+        ],
+        "categories_any": [
+          "Web Search & Research"
+        ]
+      },
+      "next": "Keep research tasks in the regression eval alongside coding."
+    }
+  ],
+  "label_takeaways": {
+    "Generic Good": [
+      "The largest group, and it carries the star average. It says the app is liked; it doesn't say why.",
+      "Mostly one to three words, in dozens of languages. Leave it out of any qualitative read."
+    ],
+    "Specific Praise": [
+      "Study and work use, coding, accuracy, and an honest, direct tone cover most of it.",
+      "Coding is the most-named job. ChatGPT is the rival named most often, in praise as well as in complaints."
+    ],
+    "Specific Complaint": [
+      "Limits lead, from free and paying users alike. Accuracy and refusals follow.",
+      "Account bans and age checks grew through the period and led every other topic in the final weeks.",
+      "Billing, support, and account complaints are the lowest-rated of all. They're operational, and fixable."
+    ],
+    "Feature Request": [
+      "A small group, and friendlier than the complaints: most rate the app 4 or 5 stars.",
+      "Image generation is the most-named request, then interface languages (Arabic first), then more use before the limit."
+    ],
+    "Generic Bad": [
+      "Short dismissals with nothing to act on. Some name a rival as better."
+    ],
+    "Nonsense": [
+      "Off-topic text, pasted chat output, test strings, and reviews meant for another app. Excluded from sentiment reads."
+    ]
+  },
+  "category_notes": {
+    "Paid Plan Limits": "Reviewers who say they pay and still run out. Lower-rated than the free-limit reviews, and one in six says the allowance shrank.",
+    "Free & Unstated Limits": "The highest-volume complaint. Includes anyone who didn't state a plan, so some subscribers are in here too.",
+    "Pricing & Value": "Mostly \"too expensive\", usually tied to how little use the plan buys. Also student and regional price requests.",
+    "Billing & Subscription": "Upgrades that didn't apply, charges after cancelling or after a ban, refunds refused. Among the lowest ratings here.",
+    "Account Bans & Age Checks": "Almost entirely complaints, and rising week over week. Under-18 detection is the cause named most often.",
+    "Customer Support": "Rarely the first problem, usually the second: a billing or account issue that never reached a person.",
+    "Answer Accuracy": "The category with the most reviews, and it cuts both ways: heavy praise for reliability and the second-largest block of complaints.",
+    "Tone & Refusals": "Refusals, lecturing, and pushback draw complaints; honesty and directness draw praise. The same trait, read two ways.",
+    "Models & Model Quality": "Split almost evenly. Praise for intelligence; complaints that a newer model is duller or more restricted than the last.",
+    "Coding & Claude Code": "The most-praised job. Complaints are about wrong code and sessions that stop at the limit.",
+    "Cowork & Agents": "Small and mixed: praise for integrations, requests to see and control desktop work from the phone.",
+    "Writing & Creative": "Mostly praise. The complaints come from creative writers who say newer models lost something.",
+    "Web Search & Research": "Mostly praise for research depth. Complaints are about stale or missing sources.",
+    "Images & Files": "Dominated by one thing: no image generation. File upload and download bugs make up most of the rest.",
+    "Voice & Dictation": "Recognition errors, voices that changed, sessions that time out, and read-aloud gaining a limit.",
+    "Memory & Chats": "Lost context in long chats, chats that don't sync between devices, and no search across chats.",
+    "Reliability & Bugs": "Errors, overloaded messages, cut-off replies, and features that broke after an update.",
+    "Speed": "Split evenly between fast and slow.",
+    "Login & Availability": "Sign-in failures and countries where the app can't be used.",
+    "UI / UX": "Praise for ease of use; complaints from tablet and foldable owners and about recent layout changes.",
+    "Language Support": "Requests for an interface or replies in the reviewer's language. Arabic leads by a wide margin.",
+    "Privacy & Company": "Not about the app: objections to Anthropic over training data and book scanning, watermarking, and AI itself. Low-rated, and outside what a product team can fix in the app.",
+    "Use Cases": "What people use it for: study, homework, work. Nearly all positive, and the highest-rated category.",
+    "Other": "Specific reviews that fit nowhere else."
+  }
+}
