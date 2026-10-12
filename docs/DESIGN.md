@@ -3,6 +3,41 @@
 
 # Site design spec, v2
 
+## v3: Anthropic palette (Oct 12, 2026)
+
+Abhinav asked for the dashboard in Anthropic's colors "so that anyone who looks at it knows it's
+Anthropic". This section overrides every token, type, and motion rule below. Tabs, charts, copy,
+data rules, and behavior are unchanged. The source of truth for values is `site/styles.css`.
+
+- **Identity.** Anthropic's published palette, no logo and no wordmark. The footer still says
+  independent, unofficial, not affiliated. This replaces principle 4 ("no brand colors").
+- **Shell.** A full-bleed clay masthead (`--clay` `#d97757`) with slate text and slate buttons, an
+  ivory working area (`--page` `#faf9f5`), and a slate footer (`#141413`). The masthead and footer
+  keep their colors in the dark theme.
+- **Surfaces and text, light.** surface `#f5f4ed`, raised `#ffffff`, border `#e8e6dc`, strong border
+  `#d1cfc5`; text `#141413` / `#3d3d3a` / `#5e5d59` / `#b0aea5`.
+- **Surfaces and text, dark.** page `#1f1e1d`, surface `#262624`, raised `#30302e`, border `#3a3937`;
+  text `#faf9f5` / `#c2c0b6` / `#9c9a92` / `#5e5d59`.
+- **Controls.** Selection is slate on ivory (ivory on slate in dark): the platform toggle, pressed
+  chips, primary buttons. The active tab is a 2px clay underline. Links are `--brand` (`#a8482a`
+  light, `#e8957a` dark), a darker clay that passes 4.5:1. Focus rings are `--focus` clay.
+- **Meaning colors, light / dark.** praise olive `#788c5d` / `#8fa672`; complaint brick `#bf4d43` /
+  `#e0685c`, kept apart from clay so the brand color never reads as "bad"; request sky `#6a9bcc` /
+  `#7aa9d6`; generic good kraft `#d4a27f`; generic bad fig `#c46686` / `#d07a97`; nonsense and
+  sentiment `#7d7ab0` / `#a3a0d0`; stars `#c48a3f` / `#d9a85f`; volume slate `#3d3d3a` / `#c2c0b6`.
+  The languages donut is a one-hue sky ramp.
+- **Type.** Lora for the title, section headings, takeaway and opportunity titles, and headline
+  figures. Poppins for interface text. JetBrains Mono for tabular figures and axis ticks. Lora and
+  Poppins are the open faces Anthropic's brand guidelines name.
+- **Shape.** Cards 12px radius, controls 8px, 1px borders, no card shadows. No colored side or top
+  stripes: "Next step" is a tinted block and opportunity tone lives in the tag.
+- **Default theme.** Dark (`data-theme="dark"` on `<html>`), set Oct 12, 2026 at Abhinav's request. The
+  Theme button still switches to light and remembers the choice.
+- **Motion.** Pressable controls scale to 0.97 on press over 160ms. Color and border changes run
+  150ms. The drawer slides in from the right edge over 280ms on `cubic-bezier(0.32, 0.72, 0, 1)`
+  with a 200ms backdrop fade. Hover styles apply only on hover-capable pointers. Reduced motion keeps
+  fades and drops movement.
+
 Written by Claude. v2 replaces the v1 look after Abhinav's review of the first build: "every text
 is white, every chart is blue", too few chart forms, and volume and rating should share one chart.
 Structure, tabs, data rules, and behavior from v1 stand unless this file changes them.
@@ -86,8 +121,8 @@ Three rules carry the whole redesign:
 1. **Nothing typed.** Every number comes from `site/data/*.json`.
 2. **Show the denominator.** Any subset figure shows its n.
 3. **Signals, not verdicts.** The evidence note stays on Opportunities.
-4. **Own identity.** No Anthropic or Claude logo, wordmark, or brand colors. Footer says independent and
-   unofficial.
+4. **Unofficial, and says so.** No Anthropic or Claude logo or wordmark. Anthropic's colors are used
+   (see v3). Footer says independent and unofficial.
 
 ## Stack
 
