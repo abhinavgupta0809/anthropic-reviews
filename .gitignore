@@ -7,3 +7,6 @@ __pycache__/
 data/interim/
 data/run_logs/
 data.run1/
+.vercel/
+.vercel
+.env*
