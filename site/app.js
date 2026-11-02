@@ -175,11 +175,11 @@ function takeawayPoints(data, weeks, categories) {
       more: opportunityJump('i_billing', 'See the billing opportunity')});
   }
 
-  // 7. Reviews that name the top rival are a churn signal.
+  // 7. How reviewers who name the top rival rate the app, against the reviewers in this scope overall.
   const rivals = data.competitors.filter(c => c.count && c.name !== 'Other').sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
-  if (rivals.length > ui.one && s.pct_low_star) { const [top, next] = rivals, lowStars = top.star_counts[0] + top.star_counts[1], highStars = top.star_counts[3] + top.star_counts[4], ratio = (lowStars / top.count * ui.hundred) / s.pct_low_star, images = insightCount('c_rival_images');
-    points.push({chart: 'competitors', see: 'Competitors named', title: lowStars > highStars ? `Reviews that name ${top.name} are a churn signal` : `${top.name} is named more often by happy reviewers than unhappy ones`,
-      evidence: `${top.name} appears in ${nf(top.count)} ${scopeNote}reviews, ahead of ${next.name} (${nf(next.count)}). ${share(highStars, top.count)} give 4 or 5 stars and ${share(lowStars, top.count)} give 1 or 2, against ${pct(s.pct_low_star)} low-star across all ${scopeNote}reviews (${nf(ratio, 1)}× the base rate).${images ? ` ${nf(images)} reviews that name a rival also bring up generating or editing images.` : ''}`,
+  if (rivals.length > ui.one && s.pct_low_star) { const [top, next] = rivals, lowStars = top.star_counts[0] + top.star_counts[1], highStars = top.star_counts[3] + top.star_counts[4], allHigh = s.star_counts[3] + s.star_counts[4], ratio = (lowStars / top.count * ui.hundred) / s.pct_low_star, images = insightCount('c_rival_images');
+    points.push({chart: 'competitors', see: 'Competitors named', title: ratio > ui.one ? `Reviewers who name ${top.name} are less happy than average` : `Reviewers who name ${top.name} are happier than average`,
+      evidence: `${top.name} appears in ${nf(top.count)} ${scopeNote}reviews, ahead of ${next.name} (${nf(next.count)}). ${share(highStars, top.count)} give 4 or 5 stars and ${share(lowStars, top.count)} give 1 or 2, against ${share(allHigh, s.count)} and ${pct(s.pct_low_star)} across all ${scopeNote}reviews.${images ? ` ${nf(images)} reviews that name a rival also bring up generating or editing images.` : ''}`,
       action: `Read the ${nf(lowStars)} low-star ${top.name} reviews as possible exit interviews and the ${nf(highStars)} high-star ones as possible win interviews; a star rating does not say who switched, so read the text. Tally the stated reasons on each side. If limits and image generation lead the exits while coding and honesty lead the wins, that is the positioning and the roadmap trade-off in one table.`,
       more: {text: `Read the reviews naming ${top.name}`, href: `#reviews?${new URLSearchParams({platform: state.platform})}`, onClick: () => { resetReviewFilters(); state.filters.competitor = top.name; navigate('reviews'); }}}); }
 
