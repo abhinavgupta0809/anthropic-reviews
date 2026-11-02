@@ -597,7 +597,7 @@
   "strengths": [
     {
       "id": "s_coding",
-      "title": "Coding is the most-praised job",
+      "title": "Coding is a top reason for praise",
       "desc": "Praise that names programming, building apps, or Claude Code.",
       "match": {
         "labels_any": [
@@ -715,16 +715,16 @@
     ],
     "Specific Praise": [
       "Study and work use, coding, accuracy, and an honest, direct tone cover most of it.",
-      "Coding is the most-named job. ChatGPT is the rival named most often, in praise as well as in complaints."
+      "Among the jobs people name, study and work lead, then coding. ChatGPT is the rival named most often, in praise as well as in complaints."
     ],
     "Specific Complaint": [
-      "Limits lead, from free and paying users alike. Accuracy and refusals follow.",
+      "Limits lead, from free and paying users alike. Account bans and age checks are second, then accuracy and refusals.",
       "Account bans and age checks grew through the period and led every other topic in the final weeks.",
       "Billing, support, and account complaints are the lowest-rated of all. They're operational, and fixable."
     ],
     "Feature Request": [
       "A small group, and friendlier than the complaints: most rate the app 4 or 5 stars.",
-      "Image generation is the most-named request, then interface languages (Arabic first), then more use before the limit."
+      "More use before the limit is the largest group of requests. Image generation is the most-repeated single ask, then Arabic."
     ],
     "Generic Bad": [
       "Short dismissals with nothing to act on. Some name a rival as better."
@@ -738,12 +738,12 @@
     "Free & Unstated Limits": "The highest-volume complaint. Includes anyone who didn't state a plan, so some subscribers are in here too.",
     "Pricing & Value": "Mostly \"too expensive\", usually tied to how little use the plan buys. Also student and regional price requests.",
     "Billing & Subscription": "Upgrades that didn't apply, charges after cancelling or after a ban, refunds refused. Among the lowest ratings here.",
-    "Account Bans & Age Checks": "Almost entirely complaints, and rising week over week. Under-18 detection is the cause named most often.",
+    "Account Bans & Age Checks": "Almost entirely complaints, and rising through the period. Under-18 detection is the cause named most often.",
     "Customer Support": "Rarely the first problem, usually the second: a billing or account issue that never reached a person.",
-    "Answer Accuracy": "The category with the most reviews, and it cuts both ways: heavy praise for reliability and the second-largest block of complaints.",
+    "Answer Accuracy": "The category with the most reviews, and it cuts both ways: heavy praise for reliability and the third-largest block of complaints.",
     "Tone & Refusals": "Refusals, lecturing, and pushback draw complaints; honesty and directness draw praise. The same trait, read two ways.",
     "Models & Model Quality": "Split almost evenly. Praise for intelligence; complaints that a newer model is duller or more restricted than the last.",
-    "Coding & Claude Code": "The most-praised job. Complaints are about wrong code and sessions that stop at the limit.",
+    "Coding & Claude Code": "Among the most-praised areas. Complaints are about wrong code and sessions that stop at the limit.",
     "Cowork & Agents": "Small and mixed: praise for integrations, requests to see and control desktop work from the phone.",
     "Writing & Creative": "Mostly praise. The complaints come from creative writers who say newer models lost something.",
     "Web Search & Research": "Mostly praise for research depth. Complaints are about stale or missing sources.",
@@ -751,7 +751,7 @@
     "Voice & Dictation": "Recognition errors, voices that changed, sessions that time out, and read-aloud gaining a limit.",
     "Memory & Chats": "Lost context in long chats, chats that don't sync between devices, and no search across chats.",
     "Reliability & Bugs": "Errors, overloaded messages, cut-off replies, and features that broke after an update.",
-    "Speed": "Split evenly between fast and slow.",
+    "Speed": "Split close to evenly between fast and slow.",
     "Login & Availability": "Sign-in failures and countries where the app can't be used.",
     "UI / UX": "Praise for ease of use; complaints from tablet and foldable owners and about recent layout changes.",
     "Language Support": "Requests for an interface or replies in the reviewer's language. Arabic leads by a wide margin.",

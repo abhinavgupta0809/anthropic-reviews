@@ -268,8 +268,11 @@ def scope_summary(rows, daily, scope, weeks, taxonomy):
 
 def build(args):
     taxonomy = load_taxonomy(args.taxonomy)
-    rows = read_reviews(args.annotated, taxonomy)
+    kept = read_reviews(args.annotated, taxonomy)
     daily, manifest = read_daily(args.daily), read_json(args.run)
+    # All analysis runs on the rolling window. Older reviews stay in the CSVs and on the Reviews tab.
+    cutoff = dt(manifest['run_time_utc']) - timedelta(days=manifest['settings']['window_days'])
+    rows = [r for r in kept if dt(r['timestamp']) >= cutoff]
     source = read_json(args.insights)
     insights = resolve_insights(source, rows, taxonomy)
     weeks, first_full, last_full = complete_weeks(rows, manifest)
@@ -278,6 +281,8 @@ def build(args):
                        'run_time': manifest['run_time_utc'], 'generated_at': manifest['run_time_utc'],
                        'generated_at_basis': 'Source run timestamp, fixed for deterministic builds',
                        'date_range': {'start': min(r['date_utc'] for r in rows), 'end': max(r['date_utc'] for r in rows)},
+                       'window': {'days': manifest['settings']['window_days'], 'start': cutoff.date().isoformat()},
+                       'kept': {'total': len(kept), 'before_window': len(kept) - len(rows), 'first_date': min(r['date_utc'] for r in kept)},
                        'first_full_day': first_full, 'last_full_day': last_full, 'weeks': weeks,
                        'gold': gold_figures(args.evaluation), 'platform_totals': {p: summary[p]['stats']['count'] for p in SCOPES[1:]},
                        'taxonomy': {k: taxonomy[k] for k in ('labels', 'categories', 'competitors', 'specific_labels')},
@@ -290,15 +295,18 @@ def build(args):
                               'hover_radius': 4, 'label_padding': 8, 'chart_padding': 56,
                               'bar_row_height': 48, 'label_characters': 22, 'chart_min_height': 220,
                               'mismatch_gap': taxonomy['mismatch_threshold'], 'tab_active': 0, 'tab_inactive': -1}}
-    compact = {'columns': list(REVIEW_COLUMNS), 'rows': [[r[k] for k in REVIEW_COLUMNS] for r in rows]}
+    compact = {'columns': list(REVIEW_COLUMNS), 'rows': [[r[k] for k in REVIEW_COLUMNS] for r in kept]}
     # Validate all inputs and prepare all payloads before publishing any files.
     payloads = {name: (json.dumps(value, ensure_ascii=False, separators=(',', ':'), allow_nan=False) + '\n').encode('utf-8')
                 for name, value in (('summary.json', summary), ('insights.json', insights), ('reviews.json', compact))}
+    filings_path = ROOT / 'analysis/filings.json'
+    if filings_path.exists():
+        payloads['filings.json'] = (json.dumps(read_json(filings_path), ensure_ascii=False, separators=(',', ':'), allow_nan=False) + '\n').encode('utf-8')
     try:
         raw = Path(args.raw).read_bytes()
         annotated = Path(args.annotated).read_bytes()
         raw_rows = list(csv.DictReader(io.StringIO(raw.decode('utf-8'))))
-        if [r['review_id'] for r in raw_rows] != [r['review_id'] for r in rows]:
+        if [r['review_id'] for r in raw_rows] != [r['review_id'] for r in kept]:
             raise ScrapeError('Raw and annotated CSV review IDs/order differ')
     except OSError:
         raise ScrapeError('Cannot read CSV copies') from None

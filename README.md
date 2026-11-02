@@ -1,7 +1,8 @@
 # Claude app reviews
 
 An independent, unofficial dashboard of public Google Play and App Store reviews of the Claude app
-by Anthropic: 26,000 reviews from Jul 14 to Oct 11, 2026, each labeled by an LLM and browsable.
+by Anthropic: 28,593 reviews in the 90-day window from Aug 3 to Oct 31, 2026, each labeled by an LLM and browsable,
+plus an S-1 tab that sets the filing against the reviews. 5,614 older reviews (from Jul 14) stay in the CSVs and on the Reviews tab, outside the analysis.
 Run 3 of a series (Perplexity, Indeed, Claude). Not affiliated with Anthropic.
 
 - Site: `site/` (static HTML, CSS, JavaScript; no build step)
@@ -18,6 +19,15 @@ Two things specific to this run:
 
 The labeling model is Claude Haiku, made by the company whose app is reviewed. The hand-labeled
 gold set is the control, and the site footer says so.
+
+## Extending the data
+
+Run on 2026-11-01. Scrape only new reviews into a fresh directory (with `config.WINDOW_DAYS` lowered so the feed stops early), then
+`python -m pipeline.extend --source <dir>` appends them without changing existing rows. `--since` backfills reviews the earlier scrape missed because store feeds publish late (411 from Oct 11 and 12). `pipeline/annotate_batch.py` labels through the
+half-price Batches API using the same cache, and `pipeline/annotate.py --yes` retries what's left and writes the CSV. `is_duplicate_text`
+is recomputed on the whole corpus, so it changed on 225 old rows when new reviews repeated their text. No other old field changed.
+`python -m pipeline.verify_filings` checks every S-1 quote against `data/filings/`.
+A 200-review relabel on 2026-11-02 reproduced 94.0% of first labels and 89.7% of first categories, in line with the gold set, so the corpus wasn't relabeled.
 
 ## Review collection
 

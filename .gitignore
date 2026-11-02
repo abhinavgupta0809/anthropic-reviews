@@ -11,3 +11,4 @@ data.run1/
 .vercel
 .env*
 .impeccable/review/
+data/extend-*/

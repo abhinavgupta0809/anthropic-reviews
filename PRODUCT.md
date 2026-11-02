@@ -18,7 +18,7 @@ web
 ## Product Purpose
 
 An independent, unofficial dashboard of public Google Play and App Store reviews of the Claude app:
-26,000 reviews from Jul 14 to Oct 11, 2026, each labeled by an LLM. It shows what reviewers praise,
+Reviews from the last 90 days, each labeled by an LLM, set against the S-1. It shows what reviewers praise,
 complain about, and ask for, and lets a reader open the reviews behind every number.
 
 ## Positioning

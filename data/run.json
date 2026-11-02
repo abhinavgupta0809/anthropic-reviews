@@ -1,5 +1,5 @@
 {
-  "run_time_utc": "2026-10-12T06:25:18Z",
+  "run_time_utc": "2026-11-01T00:00:00Z",
   "settings": {
     "window_days": 90,
     "max_rows": 200000,
@@ -67,5 +67,8 @@
     ],
     "play_app_id": "com.anthropic.claude",
     "appstore_id": "6473753684"
-  }
+  },
+  "previous_runs": [
+    "2026-10-12T06:25:18Z"
+  ]
 }

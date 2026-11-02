@@ -209,3 +209,11 @@ Hours between run time and newest review (before cap): android: 24.01 hours; ios
 ## Locales with no in-window reviews
 
 appstore: id, appstore: ae
+
+## Extension to 2026-11-01T00:00:00Z
+
+Added 7796 reviews newer than 2026-10-12T06:25:18Z (android 7017, ios 779). Kept corpus: 33796. Newest review: 2026-10-31T23:56:27Z.
+
+## Extension to 2026-11-01T00:00:00Z
+
+Added 411 reviews newer than 2026-10-11T00:00:00Z (android 356, ios 55). Kept corpus: 34207. Newest review: 2026-10-12T06:22:53Z.

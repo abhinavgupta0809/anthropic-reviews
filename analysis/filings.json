@@ -1,0 +1,35 @@
+{
+  "company": "Anthropic",
+  "filing": { "label": "Form S-1", "filed": "2026-10-26", "url": "https://www.sec.gov/Archives/edgar/data/0002130357/000162828026067168/anthropicpbc-sx1.htm" },
+  "about": "Reviews show what app users feel. The S-1 shows what Anthropic tells investors. Quotes are verbatim, checked by script against the filing's text.",
+  "figures": {
+    "revenue_h1_2026_musd": 16286,
+    "revenue_model_musd": [
+      { "period": "2024", "consumption": 288, "subscription": 98 },
+      { "period": "2025", "consumption": 3800, "subscription": 789 },
+      { "period": "H1 2026", "consumption": 13100, "subscription": 3200 }
+    ],
+    "customers_100k": { "value": "11,900+", "as_of": "Sep 30, 2026" },
+    "rpo": { "value": "$10.8B", "as_of": "Jun 30, 2026" }
+  },
+  "no_user_count": "A text search of the S-1 finds no count of weekly, monthly or active users.",
+  "crosswalk": [
+    { "bet": "Limits are a stated risk", "quote": "We have also changed, and may in the future change, usage limits, rate limits, or model and product capabilities, which could adversely affect our reputation and the perceived value of our offerings", "category": "Paid Plan Limits", "reading": "Reviewers who say they pay describe the effect the filing warns about, and many say the allowance shrank after a model or app update." },
+    { "bet": "Free use has to pay back", "quote": "If the costs of supporting free users exceed the value we derive from their eventual conversion or other benefits such as network effects and word-of-mouth referrals", "category": "Free & Unstated Limits", "reading": "Reviewers say the limit arrived before they could judge the product, and conversion depends on that first judgment." },
+    { "bet": "Users must be 18", "quote": "our current Consumer Terms of Service requires our users to be at least 18 years of age", "category": "Account Bans & Age Checks", "reading": "The filing gives the reason for the rule. The reviews add adults who say they were misflagged and people whose verification failed." },
+    { "bet": "Images aren't a focus", "quote": "we do not currently focus on developing video and image generation models, despite their commercial appeal", "category": "Images & Files", "reading": "Reviewers keep asking for what the filing says Anthropic isn't focused on, and some say the gap wasn't clear before they paid." },
+    { "bet": "Support affects retention", "quote": "If we fail to maintain high-quality customer support, our ability to retain and expand customers could suffer", "category": "Customer Support", "reading": "Reviewers describe billing and account problems that end at a bot or a help-centre link." },
+    { "bet": "Hallucinations are a named defect", "quote": "We have in the past discovered, and may in the future discover, errors, vulnerabilities, or other defects, such as hallucinations, in our models, platform, and applications only after deployment", "category": "Answer Accuracy", "reading": "The same topic draws both praise and complaints in the reviews, so accuracy is split by task and reader." },
+    { "bet": "Claude Code users spend the most", "quote": "the top 5% of Claude Enterprise users who used Claude Code spent approximately 20 times that amount", "category": "Coding & Claude Code", "reading": "The filing's heaviest spenders use Claude Code, and app reviewers praise coding too. Their complaints include sessions that stop at the limit with the job unfinished." },
+    { "bet": "Outages have a compute cause", "quote": "in March 2026, we experienced a service outage and periods of degraded performance", "category": "Reliability & Bugs", "reading": "The filing's example predates this window. Weekly complaints here have eased since August but haven't stopped." }
+  ],
+  "support_quotes": [
+    "excluding subscribers to our Claude Pro and Max plans",
+    "$13.1 billion",
+    "or 80% of total revenue",
+    "Subscription-based revenue increased from $98 million, or 25% of total revenue, to $789 million, or 17% of total revenue, to $3.2 billion",
+    "from $288 million, or 75% of total revenue",
+    "More than 11,900 customers with $100,000 or more of revenue",
+    "remaining performance obligations amounted to $10.8 billion"
+  ]
+}

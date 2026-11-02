@@ -4,7 +4,7 @@ const node = (tag, text, className) => { const el = document.createElement(tag);
 const button = (text, action, className) => { const el = node('button', text, className); el.type = 'button'; el.dataset.focusId = text; el.addEventListener('click', action); return el; };
 const scopes = ['all', 'android', 'ios'];
 const platformName = scope => ({all: 'All', android: 'Android', ios: 'iOS'})[scope];
-let summary, insights, ui, reviewPromise, renderEpoch;
+let summary, insights, filingsData, ui, reviewPromise, renderEpoch;
 const state = {tab: 'overview', platform: 'all', deepKind: 'labels', deepName: '', deepTopic: '', deepLabel: '', deepStars: '', deepSort: 'helpful', deepPage: null, reviewPage: null, filters: {}, drawer: null, jump: null, chart: null, takeaway: null};
 const nf = (value, digits) => value === null || value === undefined ? 'n/a' : new Intl.NumberFormat('en-US', {maximumFractionDigits: digits ?? ui.zero, minimumFractionDigits: digits ?? ui.zero}).format(value);
 const pct = value => value === null || value === undefined ? 'n/a' : `${nf(value)}%`;
@@ -34,7 +34,7 @@ function hashState() {
   const [tab, query] = location.hash.slice(ui.one).split('?');
   const params = new URLSearchParams(query || '');
   const platform = params.get('platform');
-  state.tab = ['overview', 'deep-dive', 'opportunities', 'reviews'].includes(tab) ? tab : 'overview';
+  state.tab = ['overview', 'deep-dive', 'opportunities', 'filings', 'reviews'].includes(tab) ? tab : 'overview';
   state.platform = scopes.includes(platform) ? platform : 'all';
   state.chart = state.tab === 'overview' ? params.get('chart') : null;
   state.takeaway = state.tab === 'overview' ? params.get('takeaway') : null;
@@ -371,7 +371,7 @@ function compositionBar(stats, className) { const parts = [{name: 'Praise', valu
 function starBar(stats) { const tokens = ['--ramp-1', '--ramp-2', '--ramp-3', '--ramp-4', '--ramp-5']; const parts = stats.star_counts.map((value, i) => ({name: `${i + ui.one} star${i ? 's' : ''}`, value, token: tokens[i]})); const wrap = node('div', undefined, 'composition'); wrap.append(segmentBar(parts)); const key = node('p', undefined, 'composition-key'); for (const p of parts) key.append(dotted(`${p.name} ${nf(p.value)}`, p.token)); wrap.append(key); return wrap; }
 function resetDeepFilters() { state.deepTopic = state.deepLabel = state.deepStars = ''; state.deepSort = 'helpful'; state.deepPage = ui.one; }
 async function deepDive() {
-  const rows = await reviews(), root = node('div', undefined, 'deep-layout'), data = current();
+  const rows = (await reviews()).filter(r => r.date_utc >= summary.meta.window.start), root = node('div', undefined, 'deep-layout'), data = current();
   const sidebar = node('aside', undefined, 'sidebar'); sidebar.setAttribute('aria-label', 'Deep Dive groups'); const switcher = node('div', undefined, 'segmented');
   for (const [kind, title] of [['labels', 'Labels'], ['categories', 'Categories']]) { const control = button(title, () => { state.deepKind = kind; state.deepName = sortedGroups(data[kind]).at(ui.zero).at(ui.zero); resetDeepFilters(); navigate(); }); control.setAttribute('aria-pressed', String(state.deepKind === kind)); switcher.append(control); } sidebar.append(switcher);
   const groups = sortedGroups(data[state.deepKind]); if (!groups.some(([name]) => name === state.deepName)) state.deepName = groups.at(ui.zero).at(ui.zero);
@@ -470,7 +470,63 @@ function opportunities() {
     if (!cards.childNodes.length) cards.append(node('p', 'No matching signals in this view.', 'muted')); root.append(cards);
   } return root;
 }
-function resetReviewFilters() { state.filters = {search: '', stars: '', label: '', category: '', competitor: '', language: '', from: '', to: '', substantive: false, sort: 'helpful'}; state.reviewPage = ui.one; }
+// The S-1 tab. Figures come from data/filings.json and summary.json; only the wording is authored.
+function filings() {
+  const root = node('div'), f = filingsData, fig = f.figures, cats = current().categories, s = current().stats;
+  const money = m => m >= 1000 ? `$${nf(m / 1000, 1)}B` : `$${nf(m)}M`;
+  const h1 = fig.revenue_model_musd.at(-ui.one), h1Total = h1.consumption + h1.subscription;
+  const complaints = name => cats[name]?.by_label['Specific Complaint'] ?? ui.zero;
+  const requests = name => cats[name]?.by_label['Feature Request'] ?? ui.zero;
+  root.append(sectionHeading('What Anthropic tells investors', `${f.filing.label}, filed ${dateText(f.filing.filed)} · ${f.about}`));
+  const band = node('div', undefined, 'stat-band');
+  band.append(stat('Revenue, H1 2026', money(fig.revenue_h1_2026_musd), 'Six months to Jun 30, 2026', '--sentiment'),
+    stat('Usage-based share', share(h1.consumption, h1Total), `${money(h1.consumption)} metered in tokens`, '--complaint'),
+    stat('Subscription share', share(h1.subscription, h1Total), `${money(h1.subscription)}, which includes Pro and Max`, '--stars'),
+    stat('Customers at $100K+', fig.customers_100k.value, fig.customers_100k.as_of, '--accent'),
+    stat('Contracted, not yet recognized', fig.rpo.value, fig.rpo.as_of, '--request'),
+    stat('App users reported', 'None', f.no_user_count, '--praise'));
+  root.append(band);
+  const cards = [
+    {title: 'Users want what the filing says isn\u2019t a focus', findings: [['S-1', `"${f.crosswalk[3].quote}."`], ['Reviews', `${nf(requests('Images & Files'))} feature requests and ${nf(complaints('Images & Files'))} complaints touch images and files (${platformName(state.platform)}).`], ['Reviews', 'Some reviewers say they found out only after paying.']],
+      insight: 'The roadmap is unlikely to close this gap, because Anthropic says it isn\u2019t focused on building there. It can still fix what people expect before they pay.', hypothesis: 'Saying what Claude doesn\u2019t generate before checkout lowers image-related refunds and 1-star reviews, without lowering paid conversion.', next: 'Count refunds in the first 7 days that mention images, and compare paid conversion with and without that line on the plan page.'},
+    {title: 'The headline retention number can\u2019t see limit anger', findings: [['S-1', `Net revenue retention is calculated "${f.support_quotes[0]}".`], ['S-1', `"${f.crosswalk[0].quote}."`], ['Reviews', `${nf(complaints('Paid Plan Limits'))} complaints from reviewers who say they pay, at ${nf(cats['Paid Plan Limits']?.avg_rating, ui.rating_digits)} stars on average.`]],
+      insight: 'Pro and Max subscribers who complain about limits are left out of that retention figure, so losing them wouldn\u2019t show in it.', hypothesis: 'A visible meter and a warning before a long request keep more Pro and Max subscribers, at lower cost than a bigger allowance.', next: 'Compare 90-day Pro and Max retention for subscribers who hit a limit in week one against those who didn\u2019t, split by plan.'},
+    {title: 'Age rules land on adults too', findings: [['S-1', `"${f.crosswalk[2].quote}", and the filing lists harm to minors as a legal risk.`], ['Reviews', `${nf(complaints('Account Bans & Age Checks'))} complaints about bans and age checks, at ${nf(cats['Account Bans & Age Checks']?.avg_rating, ui.rating_digits)} stars on average, going from ${nf(cats['Account Bans & Age Checks']?.weekly_complaints[ui.zero])} in the first full week to ${nf(cats['Account Bans & Age Checks']?.weekly_complaints.at(-ui.one))} in the last.`], ['Reviews', 'They include adults who say they were misflagged, and appeals that returned no detail.']],
+      insight: 'Legal pressure favors stricter detection, and each wrong flag costs an adult their account with little explanation. The appeal is where the product can ease that without loosening the rule.', hypothesis: 'An appeal that gives a specific reason and a time to answer lowers 1-star reviews from flagged accounts without weakening the age rule.', next: 'Measure the false-flag rate from appeal outcomes, by detection signal, and the share of flagged accounts that were paying.'}
+  ];
+  root.append(sectionHeading('Where the filing and the reviews meet', 'Findings + findings = insight = hypothesis · my reading, to check with internal data'));
+  const list = node('ol', undefined, 'key-points');
+  cards.forEach((card, index) => {
+    const item = node('li', undefined, 'key-point'), found = node('ul', undefined, 'findings');
+    for (const [source, text] of card.findings) { const li = node('li'); li.append(node('span', source, 'src-tag'), node('span', text)); found.append(li); }
+    item.append(node('p', String(index + ui.one).padStart(ui.two, '0'), 'key-point-index'), node('h3', card.title), node('p', 'Findings', 'kp-label'), found, node('p', 'Insight', 'kp-label'), node('p', card.insight), node('p', 'Hypothesis to test', 'kp-label'), node('p', card.hypothesis), nextStep(card.next));
+    list.append(item);
+  });
+  root.append(list);
+  const grid = node('div', undefined, 'grid'); grid.style.marginTop = '16px';
+  grid.append(chartCard({id: 'revenue-model', span: 12, kind: 'stackedBars', height: 210, title: 'Revenue by model', subtitle: '$ millions. H1 2026 is six months, so it isn\u2019t a full year. The S-1 doesn\u2019t split out the app',
+    data: {labels: fig.revenue_model_musd.map(r => r.period), series: [{name: 'Usage-based', token: '--complaint', values: fig.revenue_model_musd.map(r => r.consumption)}, {name: 'Subscription', token: '--praise', values: fig.revenue_model_musd.map(r => r.subscription)}], totals: false},
+    table: {columns: ['Period', 'Usage-based', 'Subscription'], rows: fig.revenue_model_musd.map(r => [r.period, money(r.consumption), money(r.subscription)])}}));
+  root.append(grid);
+  root.append(sectionHeading('Each line in the filing, against the reviews', `${platformName(state.platform)} · ${countNote(s.count)} in the window · counts are reviews whose labels include that area`));
+  const table = node('table', undefined, 'crosswalk'), head = node('thead'), hr = node('tr');
+  const crosswalkColumns = ['What the S-1 says', 'Review area', 'Reviews', 'Complaints', 'Avg stars', 'What the reviews add (my reading)'];
+  for (const column of crosswalkColumns) { const th = node('th', column); th.scope = 'col'; hr.append(th); }
+  head.append(hr); const body = node('tbody');
+  for (const row of f.crosswalk) {
+    const c = cats[row.category], tr = node('tr'), said = node('td'), area = node('td'), link = node('a', row.category);
+    said.append(node('strong', row.bet), node('q', row.quote, 'crosswalk-quote'));
+    link.href = categoryLink(row.category).href; link.dataset.deepLink = ''; area.append(link);
+    tr.append(said, area, node('td', nf(c.count), 'num'), node('td', `${nf(complaints(row.category))} (${share(complaints(row.category), c.count)})`, 'num'), node('td', nf(c.avg_rating, ui.rating_digits), 'num'), node('td', row.reading));
+    [...tr.children].forEach((cell, i) => { cell.dataset.label = crosswalkColumns[i]; });
+    body.append(tr);
+  }
+  table.append(head, body); const wrap = node('div', undefined, 'table-wrap crosswalk-wrap'); wrap.append(table); root.append(wrap);
+  const sources = node('p', undefined, 'source-list'), src = node('a', `${f.company}, ${f.filing.label}, filed ${dateText(f.filing.filed)}`); src.href = f.filing.url; src.target = '_blank'; src.rel = 'noopener'; sources.append(src);
+  root.append(sectionHeading('Source'), sources);
+  return root;
+}
+function resetReviewFilters() { state.filters = {search: '', stars: '', label: '', category: '', competitor: '', language: '', from: summary.meta.window.start, to: '', substantive: false, sort: 'helpful'}; state.reviewPage = ui.one; }
 async function reviewsTab() {
   const rows = await reviews(), root = node('div'), filters = node('div', undefined, 'filters'), f = state.filters;
   const listContainer = node('div');
@@ -480,8 +536,9 @@ async function reviewsTab() {
   const search = node('input'); search.type = 'search'; search.placeholder = 'Search original, translation, or topic'; search.value = f.search; search.addEventListener('input', () => set('search', search.value)); filters.append(field('Search reviews', search, 'search'));
   filters.append(field('Stars', selectControl(starOptions(), f.stars, v => set('stars', v))));
   for (const [key, title, values] of [['label', 'Label', summary.meta.taxonomy.labels], ['category', 'Category', summary.meta.taxonomy.categories], ['competitor', 'Names a competitor', summary.meta.taxonomy.competitors], ['language', 'Language', [...new Set(rows.map(r => r.language))].sort()]]) filters.append(field(title, selectControl([['', key === 'competitor' ? 'Any or none' : `All ${key === 'category' ? 'categories' : `${key}s`}`], ...values.map(v => [v, key === 'language' ? languageName(v) : v])], f[key], v => set(key, v))));
-  for (const [key, title] of [['from', 'From date'], ['to', 'To date']]) { const input = node('input'); input.type = 'date'; input.min = summary.meta.date_range.start; input.max = summary.meta.date_range.end; input.value = f[key]; input.addEventListener('change', () => set(key, input.value)); filters.append(field(title, input)); }
+  for (const [key, title] of [['from', 'From date'], ['to', 'To date']]) { const input = node('input'); input.type = 'date'; input.min = summary.meta.kept.first_date; input.max = summary.meta.date_range.end; input.value = f[key]; input.addEventListener('change', () => set(key, input.value)); filters.append(field(title, input)); }
   const substantive = node('input'); substantive.type = 'checkbox'; substantive.checked = f.substantive; substantive.addEventListener('change', () => set('substantive', substantive.checked)); const check = node('label', undefined, 'checkbox'); check.append(substantive, node('span', 'Substantive only')); filters.append(check, field('Sort', selectControl(sortOptions(), f.sort, v => set('sort', v))), button('Clear filters', () => { resetReviewFilters(); renderPage(); }));
+  if (summary.meta.kept.before_window) root.append(node('p', `Starts at the ${summary.meta.window.days}-day window. ${nf(summary.meta.kept.before_window)} older reviews are kept here, back to ${dateText(summary.meta.kept.first_date)}: clear the From date to see them. They aren't in the charts or counts elsewhere.`, 'evidence'));
   root.append(filters); const downloads = node('div', undefined, 'header-actions'); for (const [file, title] of [['raw_reviews.csv', 'Reviews CSV'], ['annotated_reviews.csv', 'Annotated CSV']]) { const link = node('a', undefined, 'button'); link.append(icon('download'), node('span', title)); link.href = file; link.download = file; downloads.append(link); } root.append(downloads, listContainer); refreshList(); return root;
 }
 async function renderPage() {
@@ -489,7 +546,7 @@ async function renderPage() {
   const epoch = renderEpoch += ui.one; setNavigation(); clearCharts();
   if (state.tab === 'deep-dive' || state.tab === 'reviews') $('#content').replaceChildren(node('div', undefined, 'skeleton'));
   try {
-    const view = state.tab === 'overview' ? overview() : state.tab === 'opportunities' ? opportunities() : state.tab === 'deep-dive' ? await deepDive() : await reviewsTab();
+    const view = state.tab === 'overview' ? overview() : state.tab === 'opportunities' ? opportunities() : state.tab === 'filings' ? filings() : state.tab === 'deep-dive' ? await deepDive() : await reviewsTab();
     if (epoch !== renderEpoch) return; $('#content').replaceChildren(view); restoreFocus($('#content'), focus);
     // Arriving from a category link on a chart: start at the top of that category's page, with focus on its name.
     if (state.fromLink && state.tab === 'deep-dive') { state.fromLink = false; window.scrollTo({top: ui.zero}); const heading = $('#content .detail-header h2'); if (heading) { heading.tabIndex = -1; heading.focus({preventScroll: true}); } }
@@ -551,9 +608,9 @@ function initControls() {
 async function boot() {
   try {
     summary = await fetchJSON('data/summary.json'); ui = summary.meta.ui; renderEpoch = ui.zero; state.deepPage = state.reviewPage = ui.one; resetReviewFilters();
-    const meta = summary.meta; $('#subtitle').textContent = `${nf(summary.all.stats.count)} reviews · Google Play and App Store · ${dateText(meta.date_range.start)} to ${dateText(meta.date_range.end)}`;
+    const meta = summary.meta; $('#subtitle').textContent = `${nf(summary.all.stats.count)} reviews · Google Play and App Store · ${meta.window.days}-day window, ${dateText(meta.date_range.start)} to ${dateText(meta.date_range.end)}`;
     $('#footer').append(node('p', `Public Google Play and App Store reviews · Android ${nf(meta.platform_totals.android)} / iOS ${nf(meta.platform_totals.ios)} · ${dateText(meta.date_range.start)} to ${dateText(meta.date_range.end)} (UTC).`), node('p', `Labels and sentiment by an LLM, scored against ${nf(meta.gold.n)} hand-labeled reviews. Sentiment averages exclude ${nf(summary.all.stats.nonsense_count)} Nonsense reviews; store-star averages and review counts include them. Primary label agreement ${nf(meta.gold.primary_label.pct, ui.rating_digits)}% (${meta.gold.primary_label.matches}/${meta.gold.primary_label.n}); category agreement ${nf(meta.gold.primary_category.pct, ui.rating_digits)}% (${meta.gold.primary_category.matches}/${meta.gold.primary_category.n}).`), node('p', `The labeling model (${meta.product.label_model}) is made by ${meta.product.company}, the company whose app is reviewed here. The hand-labeled check above is the control for that.`), node('p', `Independent, unofficial analysis of public store reviews. Not affiliated with ${meta.product.company}. Generated ${dateText(meta.generated_at.split('T').at(ui.zero))} from the source run timestamp.`));
-    insights = await fetchJSON('data/insights.json'); hashState(); initControls(); await renderPage();
+    insights = await fetchJSON('data/insights.json'); filingsData = await fetchJSON('data/filings.json'); hashState(); initControls(); await renderPage();
   } catch (error) { $('#content').replaceChildren(errorView(error)); }
 }
 boot();
